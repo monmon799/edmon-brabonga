@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDMON FACTORY</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 20px;
+      background: #dad7d7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #333;
+    }
+    h1 {
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 2.5rem;
+    }
+    .top-bar {
+      width: 90vw;
+      max-width: 1200px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    #addBtn {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s ease;
+    }
+    #addBtn:hover {
+      background-color: #45a049;
+    }
+
+    /* FILTERS */
+    #filters {
+      width: 90vw;
+      max-width: 1200px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    #filters input[type="text"],
+    #filters select,
+    #filters button {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      font-family: 'Poppins', sans-serif;
+    }
+    #filters input[type="text"] {
+      flex: 2 1 200px;
+      min-width: 150px;
+    }
+    #filters select {
+      flex: 1 1 100px;
+      min-width: 100px;
+    }
+    #filters button {
+      flex: 1 1 80px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #filters button:hover {
+      background-color: #d32f2f;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 90vw;
+      max-width: 1200px;
+      background: white;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      font-size: 0.75rem;
+      table-layout: fixed;
+    }
+    table, th, td {
+      border: 1px solid #aaa;
+    }
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      font-weight: 400;
+      word-break: break-word;
+      white-space: normal;
+      overflow-wrap: break-word;
+    }
+    thead th {
+      background-color: #e8f5e9;
+      font-weight: 600;
+    }
+    /* Form container */
+    #formContainer {
+      background: white;
+      padding: 20px;
+      width: 650px;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1000;
+      overflow-y: auto;
+      max-height: 90vh;
+      font-size: 0.9rem;
+    }
+    #formContainer h3 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.5rem;
+    }
+    /* Form styling */
+    #addForm {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .row-group {
+      display: flex;
+      flex: 1 1 100%;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .row-group .form-group {
+      flex: 1 1 300px;
+      min-width: 200px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 200px;
+      min-width: 200px;
+    }
+    label {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      padding: 8px;
+      font-size: 0.9rem;
+      border: 1px solid #aaa;
+      border-radius: 3px;
+      width: 100%;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      white-space: normal;
+      word-break: break-word;
+    }
+    /* Styling buttons container */
+    .form-buttons {
+      width: 100%;
+      display: flex;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .form-buttons button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .form-buttons button[type="submit"] {
+      background-color: #2196F3;
+      color: white;
+    }
+    .form-buttons button[type="submit"]:hover {
+      background-color: #0b7dda;
+    }
+    .form-buttons button[type="button"] {
+      background-color: #f44336;
+      color: white;
+    }
+    .form-buttons button[type="button"]:hover {
+      background-color: #d32f2f;
+    }
+    /* overlay for form */
+    #overlay {
+      display: none;
+      position: fixed;
+      top:0; left:0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <h1>EDMON FACTORY</h1>
+
+  <div class="top-bar">
+    <button id="addBtn" title="Add Donation">+</button>
+  </div>
+
+  <!-- FILTERS -->
+  <div id="filters">
+    <input type="text" id="searchInput" placeholder="Search..." />
+
+    <select id="donationTypeFilter" >
+      <option value="">All Donation Types</option>
+      <option value="Food">Food</option>
+      <option value="Medicine">Medicine</option>
+      <option value="School Supplies">School Supplies</option>
+      <option value="Personal Necessities">Personal Necessities</option>
+      <option value="Clothes">Clothes</option>
+    </select>
+
+    <select id="monthFilter" >
+      <option value="">All Months</option>
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+
+    <select id="dayFilter" >
+      <option value="">All Days</option>
+      <!-- days will be added by JS -->
+    </select>
+
+    <select id="yearFilter" >
+      <option value="">All Years</option>
+      <!-- years will be added by JS -->
+    </select>
+
+    <button id="resetFilters">Reset</button>
+  </div>
+
+  <table id="factoryTable">
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Address</th>
+        <th>Email</th>
+        <th>Contact Number</th>
+        <th>Gender</th>
+        <th>City</th>
+        <th>Province</th>
+        <th>Municipal</th>
+        <th>Barangay</th>
+        <th>Donation Type</th>
+        <th>Specify Item</th>
+        <th>Unit</th>
+        <th>Quantity</th>
+        <th>Delivery Option</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows go here -->
+    </tbody>
+  </table>
+
+  <div id="overlay"></div>
+
+  <div id="formContainer" role="dialog" aria-modal="true" aria-labelledby="formTitle">
+    <h3 id="formTitle">Add Donation</h3>
+    <form id="addForm">
+      <div class="row-group">
+        <div class="form-group">
+          <label for="fullname">Full Name</label>
+          <input type="text" id="fullname" name="fullname" required />
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+  <label for="contactnum">Contact Number</label>
+  <input type="tel" id="contactnum" name="contactnum" placeholder="e.g. 09123456789" pattern="[0-9]{7,15}" title="Enter a valid contact number (7-15 digits)" required />
+</div>
+
+
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="" disabled selected>Select gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" name="city" required />
+      </div>
+
+      <div class="form-group">
+        <label for="province">Province</label>
+        <input type="text" id="province" name="province" required />
+      </div>
+
+      <div class="form-group">
+        <label for="municipal">Municipal</label>
+        <input type="text" id="municipal" name="municipal" required />
+      </div>
+
+      <div class="form-group">
+        <label for="barangay">Barangay</label>
+        <input type="text" id="barangay" name="barangay" required />
+      </div>
+
+      <div class="form-group">
+        <label for="donationType">Donation Type</label>
+        <select id="donationType" name="donationType" required>
+          <option value="" disabled selected>Select donation type</option>
+          <option value="Food">Food</option>
+          <option value="Medicine">Medicine</option>
+          <option value="School Supplies">School Supplies</option>
+          <option value="Personal Necessities">Personal Necessities</option>
+          <option value="Clothes">Clothes</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="specifyItem">Specify Item</label>
+        <input type="text" id="specifyItem" name="specifyItem" />
+      </div>
+<div class="form-group"> <label for="unit">Unit</label> <select id="unit" name="unit" required> <option value="" disabled selected>Select unit</option> <option value="Kilos">Kilos</option> <option value="Pieces">Pieces</option> <option value="Litters">Litters</option> <option value="Packs">Packs</option> <option value="Sets">Sets</option> </select> </div>
+      <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" id="quantity" name="quantity" min="1" />
+      </div>
+<div class="form-group"> <label for="deliveryOption">Delivery Option</label> <select id="deliveryOption" name="deliveryOption" required> <option value="" disabled selected>Select delivery option</option> <option value="Pick-up">Pick-up</option> <option value="Drop-off">Drop-off</option> </select> </div>
+
+      <div class="form-group">
+        <label for="date">Date</label>
+        <input type="date" id="date" name="date" required />
+      </div>
+
+      <div class="form-buttons">
+        <button type="submit">Add</button>
+        <button type="button" id="cancelBtn">Cancel</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    // FILTERS SETUP
+    const searchInput = document.getElementById('searchInput');
+    const donationTypeFilter = document.getElementById('donationTypeFilter');
+    const monthFilter = document.getElementById('monthFilter');
+    const dayFilter = document.getElementById('dayFilter');
+    const yearFilter = document.getElementById('yearFilter');
+    const resetBtn = document.getElementById('resetFilters');
+    const tbody = document.querySelector('#factoryTable tbody');
+
+    // Add day options dynamically
+    for(let d = 1; d <= 31; d++) {
+      const option = document.createElement('option');
+      option.value = d.toString();
+      option.textContent = d;
+      dayFilter.appendChild(option);
+    }
+
+    // Add year options dynamically (current year -5 to current year +5)
+    const currentYear = new Date().getFullYear();
+    for(let y = currentYear - 5; y <= currentYear + 5; y++) {
+      const option = document.createElement('option');
+      option.value = y.toString();
+      option.textContent = y;
+      yearFilter.appendChild(option);
+    }
+
+    function filterTable() {
+      const searchText = searchInput.value.toLowerCase();
+      const donationType = donationTypeFilter.value;
+      const month = monthFilter.value;
+      const day = dayFilter.value;
+      const year = yearFilter.value;
+
+      for (let row of tbody.rows) {
+        // Get cells relevant to filtering
+        const fullname = row.cells[0].textContent.toLowerCase();
+        const address = row.cells[1].textContent.toLowerCase();
+        const email = row.cells[2].textContent.toLowerCase();
+        const contactnum = row.cells[3].textContent.toLowerCase();
+        const gender = row.cells[4].textContent.toLowerCase();
+        const city = row.cells[5].textContent.toLowerCase();
+        const province = row.cells[6].textContent.toLowerCase();
+        const municipal = row.cells[7].textContent.toLowerCase();
+        const barangay = row.cells[8].textContent.toLowerCase();
+        const donationTypeCell = row.cells[9].textContent;
+        const specifyItem = row.cells[10].textContent.toLowerCase();
+        const unit = row.cells[11].textContent.toLowerCase();
+        const quantity = row.cells[12].textContent.toLowerCase();
+        const deliveryOption = row.cells[13].textContent.toLowerCase();
+        const dateStr = row.cells[14].textContent;
+
+        // Parse date parts
+        const dateObj = new Date(dateStr);
+        if (isNaN(dateObj)) {
+          row.style.display = "none";
+          continue;
+        }
+        const rowMonth = (dateObj.getMonth() + 1).toString();
+        const rowDay = dateObj.getDate().toString();
+        const rowYear = dateObj.getFullYear().toString();
+
+        // Check search text presence in any cell
+        const textInRow = [fullname, address, email, contactnum, gender, city, province, municipal, barangay, specifyItem, unit, quantity, deliveryOption, donationTypeCell.toLowerCase()];
+        const matchesSearch = textInRow.some(text => text.includes(searchText));
+
+        const matchesDonationType = donationType === "" || donationTypeCell === donationType;
+        const matchesMonth = month === "" || rowMonth === month;
+        const matchesDay = day === "" || rowDay === day;
+        const matchesYear = year === "" || rowYear === year;
+
+        if (matchesSearch && matchesDonationType && matchesMonth && matchesDay && matchesYear) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      }
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    donationTypeFilter.addEventListener('change', filterTable);
+    monthFilter.addEventListener('change', filterTable);
+    dayFilter.addEventListener('change', filterTable);
+    yearFilter.addEventListener('change', filterTable);
+
+    resetBtn.addEventListener('click', () => {
+      searchInput.value = "";
+      donationTypeFilter.value = "";
+      monthFilter.value = "";
+      dayFilter.value = "";
+      yearFilter.value = "";
+      filterTable();
+    });
+
+    // FORM HANDLING
+    const addBtn = document.getElementById('addBtn');
+    const formContainer = document.getElementById('formContainer');
+    const overlay = document.getElementById('overlay');
+    const addForm = document.getElementById('addForm');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    function openForm() {
+      formContainer.style.display = 'block';
+      overlay.style.display = 'block';
+      // Reset form inputs and errors if any
+      addForm.reset();
+      // Set focus on fullname input
+      document.getElementById('fullname').focus();
+    }
+
+    function closeForm() {
+      formContainer.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+
+    addBtn.addEventListener('click', openForm);
+    cancelBtn.addEventListener('click', closeForm);
+    overlay.addEventListener('click', closeForm);
+
+    addForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      // Validate required fields (HTML5 validation + contact number length)
+      if (!addForm.checkValidity()) {
+        addForm.reportValidity();
+        return;
+      }
+
+      const fullname = document.getElementById('fullname').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const contactnum = document.getElementById('contactnum').value.trim();
+      const gender = document.getElementById('gender').value;
+      const city = document.getElementById('city').value.trim();
+      const province = document.getElementById('province').value.trim();
+      const municipal = document.getElementById('municipal').value.trim();
+      const barangay = document.getElementById('barangay').value.trim();
+      const donationType = document.getElementById('donationType').value;
+      const specifyItem = document.getElementById('specifyItem').value.trim();
+      const unit = document.getElementById('unit').value.trim();
+      const quantity = document.getElementById('quantity').value.trim();
+      const deliveryOption = document.getElementById('deliveryOption').value.trim();
+      const date = document.getElementById('date').value;
+
+      // Validate contact number (basic check for length between 7 and 15 digits)
+      if (!/^\d{7,15}$/.test(contactnum)) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid Contact Number',
+          text: 'Contact number must be between 7 and 15 digits.',
+        });
+        return;
+      }
+
+      // Validate date format presence
+      if (!date) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Date Required',
+          text: 'Please select a valid date.',
+        });
+        return;
+      }
+
+      // Append new row to table
+      const newRow = document.createElement('tr');
+
+      newRow.innerHTML = `
+        <td>${escapeHtml(fullname)}</td>
+        <td>${escapeHtml(address)}</td>
+        <td>${escapeHtml(email)}</td>
+        <td>${escapeHtml(contactnum)}</td>
+        <td>${escapeHtml(gender)}</td>
+        <td>${escapeHtml(city)}</td>
+        <td>${escapeHtml(province)}</td>
+        <td>${escapeHtml(municipal)}</td>
+        <td>${escapeHtml(barangay)}</td>
+        <td>${escapeHtml(donationType)}</td>
+        <td>${escapeHtml(specifyItem)}</td>
+        <td>${escapeHtml(unit)}</td>
+        <td>${escapeHtml(quantity)}</td>
+        <td>${escapeHtml(deliveryOption)}</td>
+        <td>${escapeHtml(date)}</td>
+      `;
+
+      tbody.appendChild(newRow);
+
+      // Close form and reset filters + form
+      closeForm();
+      addForm.reset();
+
+      // Run filter to make sure new row shows if filters applied
+      filterTable();
+
+      // Show success alert
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Donation added successfully!',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    });
+
+    // Escape HTML helper to prevent XSS
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+  </script>
+</body>
+</html>
